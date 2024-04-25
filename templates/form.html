@@ -111,8 +111,19 @@
 
                     <div class="mb-3">
                         <label for="Purpose_of_credit" class="form-label">Purpose of Credit:</label>
-                        <input type="text" id="Purpose_of_credit" name="Purpose_of_credit" required class="form-control">
-                    </div>
+                        <select id="Purpose_of_credit" name="Purpose_of_credit" required class="form-control">
+                          <option value="business">Business</option>
+                          <option value="domestic-app">Domestic App</option>
+                          <option value="education">Education</option>
+                          <option value="furniture">Furniture</option>
+                          <option value="new-car">New Car</option>
+                          <option value="others">Others</option>
+                          <option value="radio-tv">Radio TV</option>
+                          <option value="repairs">Repairs</option>
+                          <option value="retraining">Retraining</option>
+                          <option value="used-car">Used Car</option>
+                        </select>
+                      </div>
 
                     <div class="mb-3">
                         <label for="Credit_Amount" class="form-label">Credit Amount Required:</label>
@@ -156,19 +167,19 @@
                         </select>
                     </div>
 
-                    <div class="mb-3">
+                    <!-- <div class="mb-3">
                         <label for="Co_applicant" class="form-label">Type of Applicant:</label>
                         <select id="Co_applicant" name="Co_applicant" required class="form-select">
                             <option value="co-applicant">Co-applicant</option>
                             <option value="guarantor">Guarantor</option>
                             <option value="none">None</option>
                         </select>
-                    </div>
+                    </div> -->
 
-                    <div class="mb-3">
+                    <!-- <div class="mb-3">
                         <label for="Present_Resident" class="form-label">Present Resident:</label>
                         <input type="number" id="Present_Resident" name="Present_Resident" required class="form-control">
-                    </div>
+                    </div> -->
 
                     <div class="mb-3">
                         <label for="Real_Estate" class="form-label">Real Estate:</label>
@@ -194,14 +205,14 @@
                         </select>
                     </div>
 
-                    <div class="mb-3">
+                    <!-- <div class="mb-3">
                         <label for="Residence" class="form-label">Residence:</label>
                         <select id="Residence" name="Residence" required class="form-select">
                             <option value="free">Free</option>
                             <option value="own">Own</option>
                             <option value="rent">Rent</option>
                         </select>
-                    </div>
+                    </div> -->
 
                     <div class="mb-3">
                         <label for="Num_Credits" class="form-label">Number of Credits:</label>
@@ -218,10 +229,10 @@
                         </select>
                     </div>
 
-                    <div class="mb-3">
+                    <!-- <div class="mb-3">
                         <label for="No_dependents" class="form-label">Number of Dependents:</label>
                         <input type="number" id="No_dependents" name="No_dependents" required class="form-control">
-                    </div>
+                    </div> -->
 
                     <div class="mb-3">
                         <label for="Phone" class="form-label">Phone:</label>
@@ -267,15 +278,15 @@
                 Employment: document.getElementById('Employment').value,
                 Install_rate: parseInt(document.getElementById('Install_rate').value),
                 Marital_status: document.getElementById('Marital_status').value,
-                Co_applicant: document.getElementById('Co_applicant').value,
-                Present_Resident: parseInt(document.getElementById('Present_Resident').value),
+                // Co_applicant: document.getElementById('Co_applicant').value,
+                // Present_Resident: parseInt(document.getElementById('Present_Resident').value),
                 Real_Estate: document.getElementById('Real_Estate').value,
                 Age: parseInt(document.getElementById('Age').value),
                 Other_installment: document.getElementById('Other_installment').value,
-                Residence: document.getElementById('Residence').value,
+                // Residence: document.getElementById('Residence').value,
                 Num_Credits: parseInt(document.getElementById('Num_Credits').value),
                 Job: document.getElementById('Job').value,
-                No_dependents: parseInt(document.getElementById('No_dependents').value),
+                // No_dependents: parseInt(document.getElementById('No_dependents').value),
                 Phone: document.getElementById('Phone').value,
                 Foreign: document.getElementById('Foreign').value
             };
