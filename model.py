@@ -52,7 +52,7 @@ f1 = f1_score(y_test, y_pred)
 print(f"Decision Tree accuracy: {accuracy}")
 print(f"Decision Tree F1 score: {f1}")
 
-# Serialize the Decision Tree model
+# Serialize the ML model
 with open('model.pkl', 'wb') as file:
     pickle.dump(lor_model, file)
 
