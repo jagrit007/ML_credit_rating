@@ -1,10 +1,10 @@
-import pandas as pd 
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
-from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import accuracy_score, f1_score
+import pandas as pd
 import pickle
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from imblearn.combine import SMOTEENN  # For handling imbalanced data
 
 # Suppress warnings
 import warnings
@@ -13,56 +13,74 @@ warnings.filterwarnings("ignore")
 # Load dataset
 df = pd.read_csv("credit_rating.csv")
 
-# Encode categorical features
-label_encoder = LabelEncoder()
-df_encoded = df.apply(label_encoder.fit_transform)
+df.drop(columns = ['S.No', 'S.No.'], inplace = True)
 
-# Split data into features and target
-X = df_encoded.drop(['S.No', 'S.No.', 'Credit classification'], axis=1)
-y = df_encoded['Credit classification']
+missing_values = df.isnull().sum()
 
-# Split data into train and test sets
-x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+duplicates = df.duplicated().sum()
 
-# Train Logistic Regression model
-lor_model = LogisticRegression(max_iter=10000)
-lor_model.fit(x_train, y_train)
-lor_score = lor_model.score(x_test, y_test)
-print(f"Logistic Regression score: {lor_score}")
+print(missing_values, duplicates)
 
-# Evaluate logistic regression model
-y_pred = lor_model.predict(x_test)
+if duplicates > 0:
+    df.drop_duplicates(inplace=True)
+
+
+categorical_columns = df.select_dtypes(include=['object']).columns
+print(categorical_columns)
+
+for column in categorical_columns:
+    le = LabelEncoder()
+    df[column] = le.fit_transform(df[column])
+
+
+related_cols = []
+matrix = df.corr().to_dict()
+for i, j in matrix.items():
+  if i == 'Credit classification':
+    for j, k in matrix[i].items():
+      if abs(k) > 0.03:
+        related_cols.append(j)
+related_cols.remove('Credit classification')
+print(related_cols)
+
+
+X = df[related_cols]
+y = df['Credit classification']
+
+
+
+# Initialize SMOTEENN
+smote_enn = SMOTEENN(random_state=42)
+
+# Apply SMOTEENN
+X_resampled, y_resampled = smote_enn.fit_resample(X, y)
+
+# Splitting the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X_resampled, y_resampled, test_size=0.2, random_state=42)
+
+# Training the Logistic Regression model
+logistic_model = LogisticRegression(max_iter=3000)
+logistic_model.fit(X_train, y_train)
+
+# Predicting the test set
+y_pred = logistic_model.predict(X_test)
+
+# Evaluating the model
+
 accuracy = accuracy_score(y_test, y_pred)
+precision = precision_score(y_test, y_pred)
+recall = recall_score(y_test, y_pred)
 f1 = f1_score(y_test, y_pred)
-print(f"Logistic Regression accuracy: {accuracy}")
-print(f"Logistic Regression F1 score: {f1}")
+print("Accuracy: ", accuracy*100)
+print("Precision: ", precision*100)
+print("Recall: ", recall*100)
+print("F1 Score: ", f1*100)
 
+with open('model_new.pkl', 'wb') as file:
+    pickle.dump(logistic_model, file)
+
+
+print("All done")
 print('------------------------------------')
 
-# Train Decision Tree model
-dtc_model = DecisionTreeClassifier()
-dtc_model.fit(x_train, y_train)
-dtc_score = dtc_model.score(x_test, y_test)
-print(f"Decision Tree score: {dtc_score}")
-
-# Evaluate Decision Tree model
-y_pred = dtc_model.predict(x_test)
-accuracy = accuracy_score(y_test, y_pred)
-f1 = f1_score(y_test, y_pred)
-print(f"Decision Tree accuracy: {accuracy}")
-print(f"Decision Tree F1 score: {f1}")
-
-# Serialize the Decision Tree model
-with open('model.pkl', 'wb') as file:
-    pickle.dump(lor_model, file)
-
-# testing the data
-# columns = ['CHK_ACCT','Duration','History','Purpose of credit','Credit Amount',
-#         'Balance in Savings A/C','Employment','Install_rate','Marital status',
-#         'Co-applicant','Present Resident','Real Estate','Age','Other installment',
-#         'Residence','Num_Credits','Job','No. dependents','Phone','Foreign']
-# sample = [[0, 6, 2, 6, 1169, 4, 2, 4, 3, 2, 4, 3, 67, 1, 1, 2, 1, 1, 0, 1]]
-# new_df = pd.DataFrame(sample, columns=columns)
-# prediction = list(lor_model.predict(new_df))
-# print(prediction)
 
